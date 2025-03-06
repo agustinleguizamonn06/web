@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario 2025</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            background-image: url(sele.png);
+            background-position:center;
+            background-attachment: fixed;
+        }
+        /* Escondemos el calendario inicialmente */
+        .container, .calendar, .day-container {
+            display: none;
+        }
+        .container.active, .calendar.active, .day-container.active {
+            display: block;
+        }
+        .login-container {
+            display: block;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .login-container input {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .login-container button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #cc86b3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .login-container button:hover {
+            background-color: #aa4085;
+        }
+        .error-message {
+            color: red;
+            font-family: sans-serif;
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 18px;
+            border: none;
+            background-color: #ffffff;
+            color: rgb(248, 2, 2);
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="login-container">
+        <h2>Iniciar Sesión</h2>
+        <input type="text" id="username" placeholder="Usuario">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="login()">Entrar</button>
+        <p class="error-message" id="error-message" style="display: none;">Usuario o contraseña incorrectos</p>
+    </div>
+
+    <div class="container active" id="months">
+        <!-- Tus botones de meses aquí -->
+    </div>
+
+    <div id="calendar-container" class="calendar"></div>
+    <div id="day-container" class="day-container"></div>
+
+    <script>
+        const correctUsername = "agusysele"; // Usuario fijo
+        const correctPassword = "081124"; // Contraseña fija
+
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const errorMessage = document.getElementById("error-message");
+
+            // Verificamos si las credenciales son correctas
+            if (username === correctUsername && password === correctPassword) {
+                // Redirigir a otra página
+                window.location.href = "final.html"; // Reemplaza esto con el enlace que quieras usar
+            } else {
+                errorMessage.style.display = "block"; // Muestra un mensaje de error
+            }
+        }
+    </script>
+</body>
+</html>

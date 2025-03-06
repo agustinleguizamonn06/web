@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario 2025</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            background-image: url(sele.png);
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .container,
+        .calendar,
+        .day-container {
+            display: none;
+        }
+
+        .container.active,
+        .calendar.active,
+        .day-container.active {
+            display: block;
+        }
+
+        .month-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 18px;
+            border: none;
+            background-color: #cc86b3;
+            color: rgb(255, 255, 255);
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .month-btn:hover {
+            background-color: #aa4085;
+            transform: scale(1.1);
+        }
+
+        table {
+            width: 60%;
+            margin: auto;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        th {
+            background-color: #ddd;
+        }
+
+        td:hover {
+            background-color: #db3434;
+            color: white;
+        }
+
+        .highlight {
+            background-color: #c0196c !important;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .calendarioxd {
+            color: white;
+            background-color: #cc86b3;
+            transform: scale(1.1);
+        }
+
+        .reset-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 18px;
+            border: none;
+            background-color: #cc86b3;
+            color: rgb(255, 255, 255);
+            cursor: pointer;
+            border-radius: 5px;
+            position: absolute;
+            bottom: 10px;
+            left: 42%;
+        }
+
+        .reset-btn:hover {
+            background-color: #aa4085;
+            transform: scale(1.2);
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 18px;
+            border: none;
+            background-color: #cc86b3;
+            color: rgb(255, 255, 255);
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .back-btn:hover {
+            background-color: #aa4085;
+            transform: scale(1.2);
+
+        }
+    </style>
+</head>
+
+<body>
+    <h2 class="calendarioxd">Calendario 2025</h2>
+    <div class="container active" id="months">
+        <button class="month-btn" onclick="showMonth('noviembre')">Noviembre 2024</button>
+        <button class="month-btn" onclick="showMonth('diciembre')">Diciembre 2024</button>
+        <button class="month-btn" onclick="showMonth('enero')">Enero</button>
+        <button class="month-btn" onclick="showMonth('febrero')">Febrero</button>
+        <button class="month-btn" onclick="showMonth('marzo')">Marzo</button>
+        <button class="month-btn" onclick="showMonth('abril')">Abril</button>
+        <button class="month-btn" onclick="showMonth('mayo')">Mayo</button>
+        <button class="month-btn" onclick="showMonth('junio')">Junio</button>
+        <button class="month-btn" onclick="showMonth('julio')">Julio</button>
+        <button class="month-btn" onclick="showMonth('agosto')">Agosto</button>
+        <button class="month-btn" onclick="showMonth('septiembre')">Septiembre</button>
+        <button class="month-btn" onclick="showMonth('octubre')">Octubre</button>
+        <button class="month-btn" onclick="showMonth('noviembre')">Noviembre</button>
+        <button class="month-btn" onclick="showMonth('diciembre')">Diciembre</button>
+        <button class="reset-btn" onclick="resetCalendar()">Resetear Calendario</button>
+    </div>
+
+    <div id="calendar-container" class="calendar"></div>
+
+    <div id="day-container" class="day-container">
+        <button class="back-btn" onclick="closeDay()">Volver</button>
+        <h3 id="day-title"></h3>
+        <input type="file" id="image-input" accept="image/*">
+        <button onclick="saveImage()">Guardar Imagen</button>
+        <button id="delete-btn" onclick="deleteImage()" style="display:none;">Eliminar Imagen</button>
+        <div id="event-content"></div>
+    </div>
+
+    <script>
+        let savedImages = JSON.parse(localStorage.getItem('savedImages')) || {};
+
+        function showMonth(month) {
+            document.getElementById("months").classList.remove("active");
+            document.getElementById("calendar-container").classList.add("active");
+            document.getElementById("calendar-container").innerHTML = generateCalendar(month);
+        }
+
+        function generateCalendar(month) {
+            let daysInMonth = {
+                "noviembre1": 30, "diciembre1": 31, "enero": 31, "febrero": 28, "marzo": 31, "abril": 30, "mayo": 31, "junio": 30,
+                "julio": 31, "agosto": 31, "septiembre": 30, "octubre": 31, "noviembre": 30, "diciembre": 31
+            };
+
+            let startDays = {
+                "noviembre1": 4,"diciembre1":6, "enero": 2, "febrero": 5, "marzo": 5, "abril": 1, "mayo": 3, "junio": 6,
+                "julio": 1, "agosto": 4, "septiembre": 0, "octubre": 2, "noviembre": 5, "diciembre": 0
+            };
+
+            let startDay = startDays[month];
+            let calendarHtml = `<h3>${month} 2025</h3>`;
+            calendarHtml += '<button class="back-btn" onclick="goBackToMonths()">Volver</button>';
+            calendarHtml += "<table><tr>";
+
+            let daysOfWeek = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+            for (let day of daysOfWeek) calendarHtml += `<th>${day}</th>`;
+            calendarHtml += "</tr><tr>";
+
+            let currentDay = 1;
+            for (let i = 0; i < 7; i++) {
+                if (i < startDay) {
+                    calendarHtml += "<td></td>";
+                } else {
+                    // Modificación: no marcar los días sin imágenes guardadas
+                    if (savedImages[month + '-' + currentDay]) {
+                        calendarHtml += `<td class="highlight" onclick="openDay('${month}', ${currentDay})">${currentDay}</td>`;
+                    } else {
+                        calendarHtml += `<td onclick="openDay('${month}', ${currentDay})">${currentDay}</td>`;
+                    }
+                    currentDay++;
+                }
+            }
+            calendarHtml += "</tr>";
+
+            while (currentDay <= daysInMonth[month]) {
+                calendarHtml += "<tr>";
+                for (let i = 0; i < 7 && currentDay <= daysInMonth[month]; i++) {
+                    // Modificación: no marcar los días sin imágenes guardadas
+                    if (savedImages[month + '-' + currentDay]) {
+                        calendarHtml += `<td class="highlight" onclick="openDay('${month}', ${currentDay})">${currentDay}</td>`;
+                    } else {
+                        calendarHtml += `<td onclick="openDay('${month}', ${currentDay})">${currentDay}</td>`;
+                    }
+                    currentDay++;
+                }
+                calendarHtml += "</tr>";
+            }
+            calendarHtml += "</table>";
+            return calendarHtml;
+        }
+
+        function openDay(month, day) {
+            document.getElementById("calendar-container").classList.remove("active");
+            document.getElementById("day-container").classList.add("active");
+            document.getElementById("day-title").textContent = `${day} de ${month} de 2025`;
+            let eventContent = document.getElementById("event-content");
+
+            // Mostrar las imágenes guardadas en el día específico
+            if (savedImages[month + '-' + day]) {
+                eventContent.innerHTML = savedImages[month + '-' + day].map(imgSrc => `<img src="${imgSrc}" alt="Imagen guardada">`).join('');
+                document.getElementById("delete-btn").style.display = 'inline-block';
+            } else {
+                eventContent.innerHTML = "";
+                document.getElementById("delete-btn").style.display = 'none';
+            }
+        }
+
+        function saveImage() {
+            let input = document.getElementById("image-input");
+            let file = input.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    let [day, month] = document.getElementById("day-title").textContent.split(" de ");
+                    let dayKey = month + '-' + day;
+
+                    // Si ya existen imágenes para el día, las agregamos a la lista
+                    if (!savedImages[dayKey]) {
+                        savedImages[dayKey] = [];
+                    }
+
+                    savedImages[dayKey].push(e.target.result);
+                    localStorage.setItem('savedImages', JSON.stringify(savedImages));
+
+                    // Mostrar las nuevas imágenes
+                    document.getElementById("event-content").innerHTML += `<img src="${e.target.result}" alt="Imagen guardada">`;
+                    document.getElementById("delete-btn").style.display = 'inline-block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function deleteImage() {
+            let [day, month] = document.getElementById("day-title").textContent.split(" de ");
+            let dayKey = month + '-' + day;
+
+            // Eliminar las imágenes del día
+            delete savedImages[dayKey];
+            localStorage.setItem('savedImages', JSON.stringify(savedImages));
+
+            // Limpiar las imágenes en la vista
+            document.getElementById("event-content").innerHTML = "";
+            document.getElementById("delete-btn").style.display = 'none';
+        }
+
+        function closeDay() {
+            document.getElementById("day-container").classList.remove("active");
+            document.getElementById("calendar-container").classList.add("active");
+        }
+
+        function goBackToMonths() {
+            document.getElementById("calendar-container").classList.remove("active");
+            document.getElementById("months").classList.add("active");
+        }
+
+        // Resetear calendario
+        function resetCalendar() {
+            // Limpiar el localStorage y el calendario
+            localStorage.removeItem('savedImages');
+            savedImages = {};
+            alert("Calendario reseteado correctamente.");
+            location.reload();
+        }
+    </script>
+</body>
+
+</html>
